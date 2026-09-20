@@ -1,3 +1,6 @@
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -288,8 +291,20 @@ def main():
     application.add_handler(conversation)
 
     print("البوت يعمل الآن...")
-    application.run_polling()
+  threading.Thread(target=run_web_server, daemon=True).start()
 
+  application.run_polling()
+
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+    server.serve_forever()
 
 if __name__ == "__main__":
     main()
