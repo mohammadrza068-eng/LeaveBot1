@@ -290,8 +290,8 @@ def main():
     application.add_handler(CallbackQueryHandler(decision))
     application.add_handler(conversation)
 
-    print("البوت يعمل الآن...")
-  threading.Thread(target=run_web_server, daemon=True).start()
+print("البوت يعمل الآن...")
+threading.Thread(target=run_web_server, daemon=True).start()
 
   application.run_polling()
 
