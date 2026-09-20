@@ -291,9 +291,8 @@ def main():
     application.add_handler(conversation)
 
 print("البوت يعمل الآن...")
-threading.Thread(target=run_web_server, daemon=True).start()
-
-  application.run_polling()
+threading.Thread(target=run_web_server,daemon=True).start()
+application.run_polling()
 
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
