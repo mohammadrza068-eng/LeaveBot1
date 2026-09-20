@@ -20,6 +20,19 @@ ADMIN_ID = 222373783
 TYPE, NAME, DATE, DAYS, OUT_TIME, IN_TIME, REASON = range(7)
 
 
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+    server.serve_forever()
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         ["📝 طلب إجازة"],
@@ -290,20 +303,10 @@ def main():
     application.add_handler(CallbackQueryHandler(decision))
     application.add_handler(conversation)
 
-print("البوت يعمل الآن...")
-threading.Thread(target=run_web_server,daemon=True).start()
-application.run_polling()
+    print("...البوت يعمل الآن")
+    threading.Thread(target=run_web_server, daemon=True).start()
+    application.run_polling()
 
-class HealthCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Bot is alive!")
-
-def run_web_server():
-    port = int(os.environ.get("PORT", 8080))
-    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
-    server.serve_forever()
 
 if __name__ == "__main__":
     main()
